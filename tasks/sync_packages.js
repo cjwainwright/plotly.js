@@ -28,7 +28,9 @@ constants.partialBundlePaths
             name: 'plotly.js-' + d.name + '-dist',
             index: d.index,
             main: 'plotly-' + d.name + '.js',
+            minified: 'plotly-' + d.name + '.min.js',
             dist: d.dist,
+            distMin: d.distMin,
             desc: 'Ready-to-use plotly.js ' + d.name + ' distributed bundle.',
         };
     })
@@ -36,7 +38,9 @@ constants.partialBundlePaths
         name: 'plotly.js-dist',
         index: path.join(constants.pathToLib, 'index.js'),
         main: 'plotly.js',
+        minified: 'plotly.min.js',
         dist: constants.pathToPlotlyDist,
+        distMin: constants.pathToPlotlyDistMin,
         desc: 'Ready-to-use plotly.js distributed bundle.',
     }])
     .forEach(syncPartialBundlePkg);
@@ -68,7 +72,8 @@ function syncPartialBundlePkg(d) {
             files: [
                 'LICENSE',
                 'README.md',
-                d.main
+                d.main,
+                d.minified
             ]
         };
 
@@ -121,6 +126,10 @@ function syncPartialBundlePkg(d) {
         fs.copy(d.dist, path.join(pkgPath, d.main), cb);
     }
 
+    function copyMinified(cb) {
+        fs.copy(d.distMin, path.join(pkgPath, d.minified), cb);
+    }    
+
     var copyLicense = _copyLicense(d, pkgPath);
 
     var publishToNPM = _publishToNPM(d, pkgPath);
@@ -130,6 +139,7 @@ function syncPartialBundlePkg(d) {
         writePackageJSON,
         writeREADME,
         copyMain,
+        copyMinified,
         copyLicense,
         publishToNPM
     ], function(err) {
